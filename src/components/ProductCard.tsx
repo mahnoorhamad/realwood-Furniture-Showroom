@@ -10,7 +10,7 @@ interface ProductCardProps {
 
 export function ProductCard({item, onViewDetails}: ProductCardProps) {
   return (
-    <article className="group flex flex-col border border-[#1A1816]/12 bg-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-15px_rgba(26,24,22,0.18)]">
+    <article className="group flex h-full flex-col border border-[#1A1816]/12 bg-white transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_18px_36px_-14px_rgba(59,40,27,0.22)]">
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#EFE9DE]">
         <SafeImage
           src={item.image}
@@ -18,7 +18,7 @@ export function ProductCard({item, onViewDetails}: ProductCardProps) {
           title={item.name}
           isPlaceholder={item.isPlaceholder}
           placeholderNote={item.placeholderNote}
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+          className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
         />
       </div>
 
@@ -48,7 +48,7 @@ export function ProductCard({item, onViewDetails}: ProductCardProps) {
             <button
               type="button"
               onClick={() => onViewDetails(item)}
-              className="inline-flex items-center justify-center gap-1.5 border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-2.5 text-xs font-medium text-[#1A1816] transition-colors duration-150 hover:border-[#3B281B] hover:bg-[#F2EDE4] whitespace-nowrap"
+              className="inline-flex items-center justify-center gap-1.5 border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-2.5 text-xs font-medium text-[#1A1816] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3B281B] hover:bg-[#F2EDE4] active:translate-y-0 active:scale-[0.98] whitespace-nowrap"
             >
               <Eye className="h-3.5 w-3.5" />
               View Details
@@ -57,7 +57,7 @@ export function ProductCard({item, onViewDetails}: ProductCardProps) {
               href={buildProductWhatsAppUrl(item.name, item.category)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex flex-1 items-center justify-center gap-1.5 bg-[#1E5C3A] px-4 py-2.5 text-xs font-medium text-white transition-colors duration-150 hover:bg-[#17482D] whitespace-nowrap"
+              className="inline-flex flex-1 items-center justify-center gap-1.5 bg-[#1E5C3A] px-4 py-2.5 text-xs font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#17482D] hover:shadow-md active:translate-y-0 active:scale-[0.98] whitespace-nowrap"
             >
               <MessageCircle className="h-3.5 w-3.5" />
               WhatsApp Inquiry

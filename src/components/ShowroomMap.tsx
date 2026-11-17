@@ -187,20 +187,23 @@ export function ShowroomMap({quotaExceeded = false}: {quotaExceeded?: boolean}) 
       </div>
 
       <div className="flex flex-col gap-4 border-t border-[#1A1816]/10 bg-[#FAF8F4] px-6 py-5 sm:flex-row sm:items-center sm:justify-between">
-        <div>
+        <div className="max-w-xl">
           <p className="text-xs font-medium tracking-wider text-[#6B5E53] uppercase">
-            Showroom Location
+            Showroom Plus Code &amp; Directions
           </p>
           <p className="mt-1 font-serif text-lg font-medium text-[#1A1816]">
             {BUSINESS_INFO.name} — {BUSINESS_INFO.address}
           </p>
+          <p className="mt-1 text-xs leading-relaxed text-[#6B5E53]">
+            {BUSINESS_INFO.locationGuidance}
+          </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 shrink-0">
           <a
             href={BUSINESS_INFO.googleMapsDirectionsUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#3B281B] px-5 py-2.5 text-sm font-medium text-[#FAF8F4] transition-colors duration-150 hover:bg-[#291B11] whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-2 bg-[#3B281B] px-5 py-2.5 text-sm font-medium text-[#FAF8F4] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#291B11] hover:shadow-md active:translate-y-0 active:scale-[0.98] whitespace-nowrap shrink-0"
           >
             <Navigation className="h-4 w-4" />
             Get Directions
@@ -209,7 +212,7 @@ export function ShowroomMap({quotaExceeded = false}: {quotaExceeded?: boolean}) 
             href={BUSINESS_INFO.googleMapsListingUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 border border-[#1A1816]/20 bg-white px-5 py-2.5 text-sm font-medium text-[#1A1816] transition-colors duration-150 hover:border-[#3B281B] hover:bg-[#F2EDE4] whitespace-nowrap shrink-0"
+            className="inline-flex items-center gap-2 border border-[#1A1816]/20 bg-white px-5 py-2.5 text-sm font-medium text-[#1A1816] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3B281B] hover:bg-[#F2EDE4] active:translate-y-0 active:scale-[0.98] whitespace-nowrap shrink-0"
           >
             Google Maps Listing
             <ExternalLink className="h-3.5 w-3.5" />

@@ -14,7 +14,7 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
   const location = useLocation();
 
   const navLinkClass = ({isActive}: {isActive: boolean}) =>
-    `relative py-1 text-sm font-medium transition-colors duration-150 whitespace-nowrap shrink-0 ${
+    `relative py-1 text-sm font-medium transition-colors duration-200 whitespace-nowrap shrink-0 ${
       isActive
         ? 'text-[#3B281B] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:w-full after:bg-[#B89352]'
         : 'text-[#6B5E53] hover:text-[#1A1816]'
@@ -80,7 +80,7 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
             </NavLink>
             <a
               href={location.pathname === '/' ? '#showroom-gallery' : '/#showroom-gallery'}
-              className="relative py-1 text-sm font-medium text-[#6B5E53] transition-colors duration-150 hover:text-[#1A1816] whitespace-nowrap shrink-0"
+              className="relative py-1 text-sm font-medium text-[#6B5E53] transition-colors duration-200 hover:text-[#1A1816] whitespace-nowrap shrink-0"
             >
               Showroom
             </a>
@@ -94,7 +94,7 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
               href={buildWhatsAppUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden items-center gap-2 bg-[#1E5C3A] px-4 py-2 text-xs font-medium text-white transition-colors duration-150 hover:bg-[#17482D] whitespace-nowrap shrink-0 sm:inline-flex"
+              className="hidden items-center gap-2 bg-[#1E5C3A] px-4 py-2 text-xs font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#17482D] hover:shadow-md active:translate-y-0 active:scale-[0.98] whitespace-nowrap shrink-0 sm:inline-flex"
             >
               <MessageCircle className="h-3.5 w-3.5" />
               WhatsApp Us
@@ -105,7 +105,7 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
               onClick={() => setMobileMenuOpen((prev) => !prev)}
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
-              className="flex h-10 w-10 items-center justify-center border border-[#1A1816]/15 text-[#1A1816] md:hidden"
+              className="flex h-10 w-10 items-center justify-center border border-[#1A1816]/15 text-[#1A1816] transition-colors hover:bg-[#F2EDE4] md:hidden"
             >
               {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -141,14 +141,14 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
                   href={buildWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-[#1E5C3A] px-4 py-3 text-sm font-medium text-white"
+                  className="inline-flex items-center justify-center gap-2 bg-[#1E5C3A] px-4 py-3 text-sm font-medium text-white active:scale-[0.98]"
                 >
                   <MessageCircle className="h-4 w-4" />
                   WhatsApp Inquiry
                 </a>
                 <a
                   href={BUSINESS_INFO.phoneHref}
-                  className="inline-flex items-center justify-center gap-2 border border-[#1A1816]/20 bg-white px-4 py-3 text-sm font-medium text-[#1A1816] tabular-nums"
+                  className="inline-flex items-center justify-center gap-2 border border-[#1A1816]/20 bg-white px-4 py-3 text-sm font-medium text-[#1A1816] tabular-nums active:scale-[0.98]"
                 >
                   <Phone className="h-4 w-4" />
                   Call {BUSINESS_INFO.phoneDisplay}
@@ -169,8 +169,8 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
                 {BUSINESS_INFO.shortName}
               </p>
               <p className="mt-3 text-sm leading-relaxed text-[#FAF8F4]/70">
-                Handcrafted solid wood furniture and interior pieces for homes across Gujrat and
-                Punjab. Visit our showroom to inspect finishes and timber craftsmanship in person.
+                Seasoned solid Sheesham and walnut furniture crafted for Pakistani homes. Safe
+                delivery across Gujrat and Punjab.
               </p>
             </div>
 
@@ -238,7 +238,7 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
                     to="/collections?category=Wardrobes"
                     className="transition-colors hover:text-white"
                   >
-                    Wardrobes &amp; Wooden Furniture
+                    Almari &amp; Wooden Furniture
                   </Link>
                 </li>
               </ul>
@@ -265,7 +265,7 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
                     href={buildWhatsAppUrl()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 bg-[#1E5C3A] px-4 py-2.5 text-xs font-medium text-white transition-colors hover:bg-[#17482D]"
+                    className="inline-flex items-center gap-2 bg-[#1E5C3A] px-4 py-2.5 text-xs font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#17482D] active:translate-y-0 active:scale-[0.98]"
                   >
                     <MessageCircle className="h-4 w-4" />
                     Message on WhatsApp
@@ -292,16 +292,23 @@ export function Layout({children, quotaExceeded}: LayoutProps) {
         </div>
       </footer>
 
-      <a
-        href={buildWhatsAppUrl()}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat with Real Wood Furnitures on WhatsApp"
-        className="fixed right-4 bottom-4 z-40 inline-flex h-12 items-center gap-2 border border-white/15 bg-[#1E5C3A] px-4 text-sm font-medium text-white shadow-lg transition-transform duration-150 hover:-translate-y-0.5 hover:bg-[#17482D]"
-      >
-        <MessageCircle className="h-4 w-4 shrink-0" />
-        <span className="hidden sm:inline">WhatsApp</span>
-      </a>
+      {/* Floating WhatsApp Quick-Chat Button with gentle periodic pulse ring */}
+      <div className="fixed right-4 bottom-4 z-40">
+        <span
+          aria-hidden="true"
+          className="animate-whatsapp-ring pointer-events-none absolute inset-0 bg-[#1E5C3A]"
+        />
+        <a
+          href={buildWhatsAppUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Chat with Real Wood Furnitures on WhatsApp"
+          className="relative inline-flex h-12 items-center gap-2 border border-white/20 bg-[#1E5C3A] px-4 text-sm font-medium text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#17482D] hover:shadow-xl active:translate-y-0 active:scale-[0.98]"
+        >
+          <MessageCircle className="h-4 w-4 shrink-0" />
+          <span>WhatsApp</span>
+        </a>
+      </div>
     </div>
   );
 }

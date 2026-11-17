@@ -1,22 +1,19 @@
-import {useEffect, useState, type FormEvent} from 'react';
+import {useState, type FormEvent} from 'react';
 import {Link} from 'react-router-dom';
 import {
   CheckCircle2,
   ChevronRight,
   Clock,
-  Edit3,
   ExternalLink,
   MapPin,
   MessageCircle,
   Navigation,
   Phone,
-  RotateCcw,
+  ZoomIn,
 } from 'lucide-react';
 import {
   BUSINESS_INFO,
-  DEFAULT_OPENING_HOURS,
-  OPENING_HOURS_STORAGE_KEY,
-  OpeningHourRow,
+  SHOWROOM_OPENING_HOURS,
   buildWhatsAppUrl,
 } from '../data/business';
 import {SHOWROOM_MEDIA} from '../data/collections';
@@ -24,12 +21,24 @@ import {SeoHead} from '../components/SeoHead';
 import {SafeImage} from '../components/SafeImage';
 import {ShowroomMap} from '../components/ShowroomMap';
 import {ShowroomGooglePhotos} from '../components/ShowroomGooglePhotos';
+import {FadeUp} from '../components/Reveal';
+import {GalleryLightboxModal, type LightboxSlide} from '../components/GalleryLightboxModal';
+
+const ABOUT_GALLERY_SLIDES: LightboxSlide[] = [
+  {
+    src: SHOWROOM_MEDIA.bed.src,
+    alt: SHOWROOM_MEDIA.bed.alt,
+    caption: 'Chinioti Carved King-Size Sheesham Bed',
+  },
+  {
+    src: SHOWROOM_MEDIA.sofa.src,
+    alt: SHOWROOM_MEDIA.sofa.alt,
+    caption: 'Hand-Carved Sheesham Drawing Room Sofa Set',
+  },
+];
 
 export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
-  // Editable opening hours state (persisted locally for showroom verification)
-  const [hours, setHours] = useState<OpeningHourRow[]>(DEFAULT_OPENING_HOURS);
-  const [isEditingHours, setIsEditingHours] = useState(false);
-
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   // Customer Inquiry Form state
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -42,42 +51,6 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
     message: string;
     whatsappUrl: string;
   } | null>(null);
-
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(OPENING_HOURS_STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as OpeningHourRow[];
-        if (Array.isArray(parsed) && parsed.length === DEFAULT_OPENING_HOURS.length) {
-          setHours(parsed);
-        }
-      }
-    } catch {
-      // Ignore storage errors
-    }
-  }, []);
-
-  const handleHourChange = (index: number, newHours: string) => {
-    setHours((prev) => prev.map((row, idx) => (idx === index ? {...row, hours: newHours} : row)));
-  };
-
-  const handleSaveHours = () => {
-    try {
-      localStorage.setItem(OPENING_HOURS_STORAGE_KEY, JSON.stringify(hours));
-    } catch {
-      // Ignore storage errors
-    }
-    setIsEditingHours(false);
-  };
-
-  const handleResetHours = () => {
-    setHours(DEFAULT_OPENING_HOURS);
-    try {
-      localStorage.removeItem(OPENING_HOURS_STORAGE_KEY);
-    } catch {
-      // Ignore storage errors
-    }
-  };
 
   const handleInquirySubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -102,7 +75,7 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
     <>
       <SeoHead
         title="About & Contact Real Wood Furnitures | Gujrat Showroom"
-        description="Contact Real Wood Furnitures in Gujrat, Punjab (G3GC+C7R). Call or WhatsApp +92 333 8407457, get directions on Google Maps, check showroom hours, or send an inquiry."
+        description="Visit Real Wood Furnitures at G3GC+C7R, Gujrat, Punjab. Seasoned Sheesham & walnut bridal suites, Dewan sofas, dining sets, and Almari wardrobes. Call or WhatsApp +92 333 8407457."
         path="/about-contact"
         breadcrumbs={[
           {name: 'Home', path: '/'},
@@ -112,7 +85,7 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
 
       {/* Page Header */}
       <section className="border-b border-[#1A1816]/10 bg-[#F2EDE4]/65 py-12 lg:py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <FadeUp className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs text-[#6B5E53]">
             <Link to="/" className="hover:text-[#1A1816]">
               Home
@@ -129,37 +102,41 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
               About {BUSINESS_INFO.name}
             </h1>
             <p className="mt-4 text-base leading-relaxed text-[#6B5E53]">
-              Serving Gujrat and surrounding Punjab communities with Pakistani solid wood
-              furniture, Chinioti-inspired bedroom suites, drawing room sofa sets, dining tables,
-              Almari wardrobes, and furniture accessories.
+              Seasoned solid Sheesham and walnut furniture in Gujrat—bridal and master bedroom
+              suites, Chinioti-inspired carving, Dewan sofas, 8-seater dining tables, Almari
+              wardrobes, and safe delivery across Gujrat and Punjab.
             </p>
           </div>
-        </div>
+        </FadeUp>
       </section>
 
       {/* About Showroom + Authentic Gallery */}
       <section className="border-b border-[#1A1816]/10 bg-[#FAF8F4] py-14 lg:py-20">
         <div className="mx-auto grid max-w-7xl items-stretch gap-10 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
-          <div className="flex flex-col justify-center lg:col-span-6">
+          <FadeUp className="flex flex-col justify-center lg:col-span-6">
             <h2 className="font-serif text-3xl font-medium text-[#1A1816]">
-              Your Furniture Showroom in Gujrat
+              Crafted from Seasoned Sheesham &amp; Walnut
             </h2>
             <p className="mt-4 text-base leading-relaxed text-[#6B5E53]">
-              At {BUSINESS_INFO.name}, we craft and curate solid Sheesham and walnut furniture
-              designed for Pakistani households. From carved bridal and master bedroom sets to
-              drawing room Dewan sofas, 8-seater dining tables, and Almari dressers, our showroom
-              combines enduring joinery with warm finishes.
+              At {BUSINESS_INFO.name}, every piece begins with seasoned solid Sheesham and walnut
+              timber shaped by skilled Pakistani craftsmen. From Chinioti-inspired carved bridal
+              and master bedroom suites to formal Dewan drawing room sofas, 8-seater family dining
+              tables, and solid wood Almari wardrobes, we build furniture designed to serve
+              generations.
             </p>
             <p className="mt-4 text-base leading-relaxed text-[#6B5E53]">
-              Visit our showroom at <strong className="font-medium text-[#1A1816]">{BUSINESS_INFO.address}</strong>{' '}
-              to experience timber finishes firsthand, or connect with our team directly via phone
-              and WhatsApp for instant guidance.
+              Need custom room sizes, specific upholstery fabrics, or matching wood polish finishes?
+              Visit our Gujrat showroom at{' '}
+              <strong className="font-medium text-[#1A1816]">{BUSINESS_INFO.address}</strong> (use
+              Plus Code <span className="font-medium text-[#1A1816]">G3GC+C7R</span> in Google
+              Maps for effortless navigation), with safe delivery available across Gujrat and
+              Punjab.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <a
                 href={BUSINESS_INFO.phoneHref}
-                className="flex items-center gap-3 border border-[#1A1816]/15 bg-white p-4 transition-colors hover:border-[#3B281B]"
+                className="flex items-center gap-3 border border-[#1A1816]/15 bg-white p-4 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3B281B] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
               >
                 <Phone className="h-5 w-5 shrink-0 text-[#B89352]" />
                 <div>
@@ -174,7 +151,7 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                 href={buildWhatsAppUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 bg-[#1E5C3A] p-4 text-white transition-colors hover:bg-[#17482D]"
+                className="flex items-center gap-3 bg-[#1E5C3A] p-4 text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#17482D] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
               >
                 <MessageCircle className="h-5 w-5 shrink-0" />
                 <div>
@@ -183,29 +160,61 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                 </div>
               </a>
             </div>
-          </div>
+          </FadeUp>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:col-span-6">
+          <FadeUp delay={0.1} className="grid gap-4 sm:grid-cols-2 lg:col-span-6">
             <div className="sm:col-span-2">
               <ShowroomGooglePhotos quotaExceeded={quotaExceeded} variant="single" />
             </div>
-            <div className="overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] aspect-[4/3]">
-              <SafeImage
-                src={SHOWROOM_MEDIA.bed.src}
-                alt={SHOWROOM_MEDIA.bed.alt}
-                title="Pakistani Carved Bed Display"
-                className="h-full w-full object-cover"
-              />
+            <div className="group overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-14px_rgba(59,40,27,0.2)]">
+              <button
+                type="button"
+                onClick={() => setLightboxIndex(0)}
+                aria-label="Zoom in on Chinioti Carved King-Size Sheesham Bed"
+                className="relative block aspect-[4/3] w-full overflow-hidden text-left focus:outline-none"
+              >
+                <SafeImage
+                  src={SHOWROOM_MEDIA.bed.src}
+                  alt={SHOWROOM_MEDIA.bed.alt}
+                  title="Chinioti Carved King-Size Sheesham Bed"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+                <span
+                  aria-hidden="true"
+                  className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center border border-white/25 bg-[#1A1816]/65 text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100"
+                >
+                  <ZoomIn className="h-3.5 w-3.5" />
+                </span>
+              </button>
+              <p className="border-t border-[#1A1816]/10 bg-white px-3.5 py-2 text-xs font-medium text-[#1A1816]">
+                Chinioti Carved King-Size Sheesham Bed
+              </p>
             </div>
-            <div className="overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] aspect-[4/3]">
-              <SafeImage
-                src={SHOWROOM_MEDIA.sofa.src}
-                alt={SHOWROOM_MEDIA.sofa.alt}
-                title="Pakistani Drawing Room Sofa Set"
-                className="h-full w-full object-cover"
-              />
+            <div className="group overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-14px_rgba(59,40,27,0.2)]">
+              <button
+                type="button"
+                onClick={() => setLightboxIndex(1)}
+                aria-label="Zoom in on Hand-Carved Sheesham Drawing Room Sofa Set"
+                className="relative block aspect-[4/3] w-full overflow-hidden text-left focus:outline-none"
+              >
+                <SafeImage
+                  src={SHOWROOM_MEDIA.sofa.src}
+                  alt={SHOWROOM_MEDIA.sofa.alt}
+                  title="Hand-Carved Sheesham Drawing Room Sofa Set"
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                />
+                <span
+                  aria-hidden="true"
+                  className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center border border-white/25 bg-[#1A1816]/65 text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100"
+                >
+                  <ZoomIn className="h-3.5 w-3.5" />
+                </span>
+              </button>
+              <p className="border-t border-[#1A1816]/10 bg-white px-3.5 py-2 text-xs font-medium text-[#1A1816]">
+                Hand-Carved Sheesham Drawing Room Sofa Set
+              </p>
             </div>
-          </div>
+          </FadeUp>
         </div>
       </section>
 
@@ -213,16 +222,16 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
       <section className="border-b border-[#1A1816]/10 bg-white py-14 lg:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:px-8">
           {/* Customer Inquiry Form */}
-          <div className="lg:col-span-7">
+          <FadeUp className="lg:col-span-7">
             <p className="text-xs font-medium tracking-[0.18em] text-[#B89352] uppercase">
-              Customer Inquiry Form
+              Direct Showroom Quote
             </p>
             <h2 className="mt-2 font-serif text-3xl font-medium text-[#1A1816]">
-              Send an Inquiry to the Showroom
+              Get Prices &amp; Custom Quotes on WhatsApp
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-[#6B5E53]">
-              Share your name, phone number, and what you are looking for. Submitting prepares a
-              direct WhatsApp message for our team at {BUSINESS_INFO.phoneDisplay}.
+              Share what you are looking for below to receive live showroom photos, exact
+              dimensions, polish options, and pricing directly on WhatsApp ({BUSINESS_INFO.phoneDisplay}).
             </p>
 
             <form onSubmit={handleInquirySubmit} className="mt-7 space-y-5">
@@ -238,7 +247,7 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
                     placeholder="e.g., Ahmad Raza"
-                    className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] focus:border-[#3B281B] focus:bg-white focus:outline-none"
+                    className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] transition-colors focus:border-[#3B281B] focus:bg-white focus:outline-none"
                   />
                 </div>
                 <div>
@@ -255,7 +264,7 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                     value={customerPhone}
                     onChange={(e) => setCustomerPhone(e.target.value)}
                     placeholder="+92 3XX XXXXXXX"
-                    className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] tabular-nums focus:border-[#3B281B] focus:bg-white focus:outline-none"
+                    className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] tabular-nums transition-colors focus:border-[#3B281B] focus:bg-white focus:outline-none"
                   />
                 </div>
               </div>
@@ -271,13 +280,13 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                   id="inquiry-interest"
                   value={customerInterest}
                   onChange={(e) => setCustomerInterest(e.target.value)}
-                  className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] focus:border-[#3B281B] focus:bg-white focus:outline-none"
+                  className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] transition-colors focus:border-[#3B281B] focus:bg-white focus:outline-none"
                 >
                   <option>Bedroom Furniture &amp; Beds</option>
-                  <option>Wardrobes</option>
-                  <option>Sofa Sets &amp; Living Room</option>
-                  <option>Dining Tables &amp; Chairs</option>
-                  <option>Wooden Furniture (Custom Order)</option>
+                  <option>Almari Wardrobes &amp; Singhar Mez</option>
+                  <option>Dewan Sofa Sets &amp; Living Room</option>
+                  <option>Sheesham Dining Tables &amp; Chairs</option>
+                  <option>Custom Size / Polish Order</option>
                   <option>Furniture Accessories</option>
                 </select>
               </div>
@@ -295,21 +304,21 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                   rows={4}
                   value={customerMessage}
                   onChange={(e) => setCustomerMessage(e.target.value)}
-                  placeholder="Share preferred dimensions, wood finish, or when you plan to visit our Gujrat showroom..."
-                  className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] focus:border-[#3B281B] focus:bg-white focus:outline-none"
+                  placeholder="Share preferred dimensions, wood polish shade, or your city in Punjab for delivery..."
+                  className="mt-1.5 w-full border border-[#1A1816]/20 bg-[#FAF8F4] px-4 py-3 text-sm text-[#1A1816] transition-colors focus:border-[#3B281B] focus:bg-white focus:outline-none"
                 />
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 bg-[#3B281B] px-6 py-3.5 text-sm font-medium text-[#FAF8F4] transition-colors hover:bg-[#291B11]"
+                  className="inline-flex items-center gap-2 bg-[#3B281B] px-6 py-3.5 text-sm font-medium text-[#FAF8F4] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#291B11] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
                 >
                   Prepare Inquiry
                 </button>
                 <a
                   href={BUSINESS_INFO.phoneHref}
-                  className="inline-flex items-center gap-2 border border-[#1A1816]/20 bg-white px-5 py-3.5 text-sm font-medium text-[#1A1816] hover:bg-[#F2EDE4]"
+                  className="inline-flex items-center gap-2 border border-[#1A1816]/20 bg-white px-5 py-3.5 text-sm font-medium text-[#1A1816] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3B281B] hover:bg-[#F2EDE4] active:translate-y-0 active:scale-[0.98] tabular-nums"
                 >
                   <Phone className="h-4 w-4" />
                   Call {BUSINESS_INFO.phoneDisplay}
@@ -329,14 +338,14 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                       Inquiry ready for {submittedPayload.name}
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-[#6B5E53]">
-                      Tap the button below to send your message directly to Real Wood Furnitures on
-                      WhatsApp ({BUSINESS_INFO.phoneDisplay}).
+                      Tap below to send your request on WhatsApp ({BUSINESS_INFO.phoneDisplay}) and
+                      receive photos, dimensions, and pricing.
                     </p>
                     <a
                       href={submittedPayload.whatsappUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-2 bg-[#1E5C3A] px-4 py-2.5 text-xs font-medium text-white hover:bg-[#17482D]"
+                      className="mt-3 inline-flex items-center gap-2 bg-[#1E5C3A] px-4 py-2.5 text-xs font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#17482D] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
                     >
                       <MessageCircle className="h-4 w-4" />
                       Send Inquiry on WhatsApp
@@ -345,28 +354,30 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                 </div>
               </div>
             )}
-          </div>
+          </FadeUp>
 
-          {/* Business Address & Editable Opening Hours */}
-          <div className="space-y-8 lg:col-span-5">
+          {/* Business Address & Clean Static Opening Hours */}
+          <FadeUp delay={0.1} className="space-y-8 lg:col-span-5">
             <div className="border border-[#1A1816]/12 bg-[#FAF8F4] p-6 sm:p-7">
               <div className="flex items-start gap-3">
                 <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-[#B89352]" />
                 <div>
                   <h2 className="font-serif text-xl font-medium text-[#1A1816]">
-                    Showroom Address
+                    Showroom Address &amp; Guidance
                   </h2>
-                  <p className="mt-1.5 text-sm leading-relaxed text-[#6B5E53]">
+                  <p className="mt-1.5 text-sm font-medium text-[#1A1816]">
                     {BUSINESS_INFO.name}
-                    <br />
-                    {BUSINESS_INFO.address}
+                  </p>
+                  <p className="text-sm text-[#6B5E53]">{BUSINESS_INFO.address}</p>
+                  <p className="mt-2 text-xs leading-relaxed text-[#6B5E53]">
+                    {BUSINESS_INFO.locationGuidance}
                   </p>
                   <div className="mt-4 flex flex-wrap gap-2.5">
                     <a
                       href={BUSINESS_INFO.googleMapsDirectionsUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 bg-[#3B281B] px-4 py-2 text-xs font-medium text-white hover:bg-[#291B11]"
+                      className="inline-flex items-center gap-1.5 bg-[#3B281B] px-4 py-2 text-xs font-medium text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#291B11] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
                     >
                       <Navigation className="h-3.5 w-3.5" />
                       Get Directions
@@ -375,7 +386,7 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
                       href={BUSINESS_INFO.googleMapsListingUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 border border-[#1A1816]/20 bg-white px-4 py-2 text-xs font-medium text-[#1A1816] hover:bg-[#F2EDE4]"
+                      className="inline-flex items-center gap-1.5 border border-[#1A1816]/20 bg-white px-4 py-2 text-xs font-medium text-[#1A1816] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#3B281B] hover:bg-[#F2EDE4] active:translate-y-0 active:scale-[0.98]"
                     >
                       Google Listing
                       <ExternalLink className="h-3 w-3" />
@@ -386,73 +397,35 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
             </div>
 
             <div className="border border-[#1A1816]/12 bg-[#FAF8F4] p-6 sm:p-7">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-2.5">
-                  <Clock className="h-5 w-5 text-[#B89352]" />
-                  <h2 className="font-serif text-xl font-medium text-[#1A1816]">Opening Hours</h2>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => (isEditingHours ? handleSaveHours() : setIsEditingHours(true))}
-                  className="inline-flex items-center gap-1.5 border border-[#1A1816]/20 bg-white px-3 py-1.5 text-xs font-medium text-[#1A1816] hover:bg-[#F2EDE4]"
-                >
-                  <Edit3 className="h-3.5 w-3.5" />
-                  {isEditingHours ? 'Save Hours' : 'Edit Hours'}
-                </button>
+              <div className="flex items-center gap-2.5">
+                <Clock className="h-5 w-5 text-[#B89352]" />
+                <h2 className="font-serif text-xl font-medium text-[#1A1816]">Opening Hours</h2>
               </div>
 
-              <p className="mt-2 text-xs text-[#6B5E53]">
-                Editable showroom schedule — please verify exact hours before publishing or call{' '}
-                <a href={BUSINESS_INFO.phoneHref} className="underline tabular-nums">
-                  {BUSINESS_INFO.phoneDisplay}
-                </a>{' '}
-                ahead of your visit.
+              <p className="mt-2 text-xs leading-relaxed text-[#6B5E53]">
+                Visit our Gujrat showroom during regular hours, or call ahead to book a private
+                Sunday appointment.
               </p>
 
               <dl className="mt-5 divide-y divide-[#1A1816]/10 border-t border-b border-[#1A1816]/10">
-                {hours.map((row, idx) => (
+                {SHOWROOM_OPENING_HOURS.map((row) => (
                   <div
                     key={row.day}
                     className="flex items-center justify-between gap-4 py-2.5 text-sm"
                   >
                     <dt className="font-medium text-[#1A1816]">{row.day}</dt>
-                    <dd className="text-right text-[#6B5E53] tabular-nums">
-                      {isEditingHours ? (
-                        <input
-                          type="text"
-                          value={row.hours}
-                          aria-label={`${row.day} opening hours`}
-                          onChange={(e) => handleHourChange(idx, e.target.value)}
-                          className="w-48 border border-[#1A1816]/25 bg-white px-2.5 py-1 text-right text-xs text-[#1A1816] focus:border-[#3B281B] focus:outline-none"
-                        />
-                      ) : (
-                        row.hours
-                      )}
-                    </dd>
+                    <dd className="text-right text-[#6B5E53] tabular-nums">{row.hours}</dd>
                   </div>
                 ))}
               </dl>
-
-              {isEditingHours && (
-                <div className="mt-3 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={handleResetHours}
-                    className="inline-flex items-center gap-1.5 text-xs text-[#6B5E53] hover:text-[#1A1816]"
-                  >
-                    <RotateCcw className="h-3.5 w-3.5" />
-                    Reset to Default
-                  </button>
-                </div>
-              )}
             </div>
-          </div>
+          </FadeUp>
         </div>
       </section>
 
       {/* Google Maps Embedded Location */}
       <section className="bg-[#FAF8F4] py-14 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <FadeUp className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-6">
             <p className="text-xs font-medium tracking-[0.18em] text-[#B89352] uppercase">
               Interactive Showroom Map
@@ -463,8 +436,15 @@ export function AboutContactPage({quotaExceeded}: {quotaExceeded: boolean}) {
           </div>
 
           <ShowroomMap quotaExceeded={quotaExceeded} />
-        </div>
+        </FadeUp>
       </section>
+
+      <GalleryLightboxModal
+        slides={ABOUT_GALLERY_SLIDES}
+        activeIndex={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={setLightboxIndex}
+      />
     </>
   );
 }

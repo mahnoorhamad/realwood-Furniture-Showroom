@@ -13,11 +13,10 @@
 ## Core Pages
 - /: Home — Showroom overview, featured furniture categories, gallery, FAQ, and Gujrat showroom map.
 - /collections: Furniture Collections — Browse bedroom furniture, wooden beds, wardrobes, sofa sets, living room furniture, dining tables, chairs, wooden furniture, and accessories with direct WhatsApp inquiries.
-- /about-contact: About & Contact — Showroom details, editable opening hours, directions, interactive Google Map, and customer inquiry form.
+- /about-contact: About & Contact — Showroom details, opening hours, directions, interactive Google Map, and WhatsApp quote inquiry form.
 
 ## Primary Specialties
-- Solid wooden furniture in Gujrat
-- Wooden beds and bedroom furniture suites
-- Sofa sets and living room seating
-- Dining tables and wooden chairs
-- Custom showroom guidance and direct WhatsApp consultation
+- Seasoned solid Sheesham and walnut furniture in Gujrat
+- Chinioti-inspired carved bridal and master bedroom suites
+- Dewan sofa sets, 8-seater dining tables, and Almari wardrobes
+- Custom sizes, wood polish finishes, and safe delivery across Gujrat and Punjab

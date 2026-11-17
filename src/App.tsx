@@ -1,5 +1,6 @@
 import {useEffect, useState, type ReactNode} from 'react';
 import {Route, Routes, useLocation, Navigate} from 'react-router-dom';
+import {MotionConfig} from 'motion/react';
 import {APIProvider} from '@vis.gl/react-google-maps';
 import {Layout} from './components/Layout';
 import {HomePage} from './pages/HomePage';
@@ -33,18 +34,20 @@ export default function App() {
   }, []);
 
   return (
-    <MapsProviderWrapper>
-      <Layout quotaExceeded={quotaExceeded}>
-        <Routes>
-          <Route path="/" element={<HomePage quotaExceeded={quotaExceeded} />} />
-          <Route path="/collections" element={<CollectionsPage />} />
-          <Route
-            path="/about-contact"
-            element={<AboutContactPage quotaExceeded={quotaExceeded} />}
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </Layout>
-    </MapsProviderWrapper>
+    <MotionConfig reducedMotion="user">
+      <MapsProviderWrapper>
+        <Layout quotaExceeded={quotaExceeded}>
+          <Routes>
+            <Route path="/" element={<HomePage quotaExceeded={quotaExceeded} />} />
+            <Route path="/collections" element={<CollectionsPage />} />
+            <Route
+              path="/about-contact"
+              element={<AboutContactPage quotaExceeded={quotaExceeded} />}
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </Layout>
+      </MapsProviderWrapper>
+    </MotionConfig>
   );
 }

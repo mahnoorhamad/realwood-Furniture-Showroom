@@ -1,9 +1,10 @@
 import {useEffect, useState} from 'react';
 import {useMapsLibrary} from '@vis.gl/react-google-maps';
-import {Camera, ExternalLink} from 'lucide-react';
+import {Camera, ExternalLink, ZoomIn} from 'lucide-react';
 import {BUSINESS_INFO} from '../data/business';
 import {SHOWROOM_MEDIA} from '../data/collections';
 import {SafeImage} from './SafeImage';
+import {GalleryLightboxModal, type LightboxSlide} from './GalleryLightboxModal';
 
 interface PlacePhotoItem {
   uri: string;
@@ -86,8 +87,52 @@ export function ShowroomGooglePhotos({
   const apiKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
   const [googlePhotos, setGooglePhotos] = useState<PlacePhotoItem[]>([]);
   const [failedIndices, setFailedIndices] = useState<Record<number, boolean>>({});
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const primaryPhoto = googlePhotos.find((_, idx) => !failedIndices[idx]) || null;
+  const validGooglePhotos = googlePhotos.filter((_, idx) => !failedIndices[idx]);
+  const primaryPhoto = validGooglePhotos[0] || null;
+
+  const singleSlides: LightboxSlide[] = primaryPhoto
+    ? [
+        {
+          src: primaryPhoto.uri,
+          alt: `${BUSINESS_INFO.name} showroom in Gujrat, Punjab displaying solid Sheesham and walnut furniture`,
+          caption: 'Gujrat Showroom · G3GC+C7R',
+          authorName: primaryPhoto.authorName,
+          authorUri: primaryPhoto.authorUri,
+        },
+      ]
+    : [
+        {
+          src: SHOWROOM_MEDIA.gallery.src,
+          alt: SHOWROOM_MEDIA.gallery.alt,
+          caption: 'Gujrat Showroom · G3GC+C7R',
+        },
+      ];
+
+  const stripSlides: LightboxSlide[] =
+    validGooglePhotos.length > 0
+      ? validGooglePhotos.slice(0, 2).map((photo, idx) => ({
+          src: photo.uri,
+          alt: `${BUSINESS_INFO.name} Gujrat showroom gallery photograph ${idx + 1}`,
+          caption: `Showroom Floor · Gujrat`,
+          authorName: photo.authorName,
+          authorUri: photo.authorUri,
+        }))
+      : [
+          {
+            src: SHOWROOM_MEDIA.dining.src,
+            alt: SHOWROOM_MEDIA.dining.alt,
+            caption: 'Solid Sheesham Dining & Sideboard Display',
+          },
+          {
+            src: SHOWROOM_MEDIA.wardrobe.src,
+            alt: SHOWROOM_MEDIA.wardrobe.alt,
+            caption: '3-Door Solid Wood Almari & Singhar Mez',
+          },
+        ];
+
+  const activeSlides = variant === 'single' ? singleSlides : stripSlides;
 
   return (
     <div className="h-full w-full">
@@ -96,12 +141,17 @@ export function ShowroomGooglePhotos({
       )}
 
       {variant === 'single' ? (
-        <div className="flex h-full flex-col overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE]">
-          <div className="aspect-[4/3] w-full flex-1 overflow-hidden">
+        <div className="group flex h-full flex-col overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-14px_rgba(59,40,27,0.2)]">
+          <button
+            type="button"
+            onClick={() => setLightboxIndex(0)}
+            aria-label="Zoom in on Gujrat Showroom photograph"
+            className="relative block aspect-[4/3] w-full flex-1 overflow-hidden text-left focus:outline-none"
+          >
             {primaryPhoto ? (
               <img
                 src={primaryPhoto.uri}
-                alt={`${BUSINESS_INFO.name} showroom in Gujrat on Google Maps`}
+                alt={`${BUSINESS_INFO.name} showroom in Gujrat, Punjab displaying solid Sheesham and walnut furniture`}
                 referrerPolicy="no-referrer"
                 loading="lazy"
                 onError={() => {
@@ -110,24 +160,30 @@ export function ShowroomGooglePhotos({
                     setFailedIndices((prev) => ({...prev, [idx]: true}));
                   }
                 }}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               />
             ) : (
               <SafeImage
                 src={SHOWROOM_MEDIA.gallery.src}
                 alt={SHOWROOM_MEDIA.gallery.alt}
-                title="Real Wood Furnitures Gujrat Showroom"
-                className="h-full w-full object-cover"
+                title="Gujrat Showroom"
+                className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
               />
             )}
-          </div>
+            <span
+              aria-hidden="true"
+              className="absolute top-3 right-3 flex h-9 w-9 items-center justify-center border border-white/25 bg-[#1A1816]/65 text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100"
+            >
+              <ZoomIn className="h-4 w-4" />
+            </span>
+          </button>
 
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[#1A1816]/10 bg-[#FAF8F4] px-4 py-2.5 text-xs text-[#6B5E53]">
             <span className="inline-flex items-center gap-1.5">
               <Camera className="h-3.5 w-3.5 text-[#B89352]" />
               {primaryPhoto ? (
                 <>
-                  Showroom photo via Google Maps
+                  Gujrat Showroom · Google Maps
                   {primaryPhoto.authorName && (
                     <>
                       <span aria-hidden="true">·</span>
@@ -147,7 +203,7 @@ export function ShowroomGooglePhotos({
                   )}
                 </>
               ) : (
-                <span>Gujrat Showroom Display · {BUSINESS_INFO.address}</span>
+                <span>Gujrat Showroom · G3GC+C7R</span>
               )}
             </span>
             <a
@@ -163,61 +219,114 @@ export function ShowroomGooglePhotos({
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
-          {googlePhotos.length > 0 && googlePhotos.some((_, idx) => !failedIndices[idx]) ? (
-            googlePhotos.slice(0, 2).map((photo, idx) =>
-              failedIndices[idx] ? null : (
-                <div
-                  key={photo.uri}
-                  className="overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE]"
+          {validGooglePhotos.length > 0 ? (
+            validGooglePhotos.slice(0, 2).map((photo, idx) => (
+              <div
+                key={photo.uri}
+                className="group overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-14px_rgba(59,40,27,0.2)]"
+              >
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(idx)}
+                  aria-label={`Zoom in on showroom view ${idx + 1}`}
+                  className="relative block aspect-[4/3] w-full overflow-hidden text-left focus:outline-none"
                 >
-                  <div className="aspect-[4/3] w-full overflow-hidden">
-                    <img
-                      src={photo.uri}
-                      alt={`${BUSINESS_INFO.name} Gujrat showroom view ${idx + 1}`}
-                      referrerPolicy="no-referrer"
-                      loading="lazy"
-                      onError={() => setFailedIndices((prev) => ({...prev, [idx]: true}))}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                  <div className="flex items-center justify-between gap-2 border-t border-[#1A1816]/10 bg-[#FAF8F4] px-3.5 py-2 text-[11px] text-[#6B5E53]">
-                    <span className="truncate">
-                      Google Maps Photo{photo.authorName ? ` · ${photo.authorName}` : ''}
-                    </span>
-                    <a
-                      href={BUSINESS_INFO.googleMapsPhotosUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="shrink-0 font-medium text-[#3B281B] hover:underline"
-                    >
-                      Maps Listing
-                    </a>
-                  </div>
+                  <img
+                    src={photo.uri}
+                    alt={`${BUSINESS_INFO.name} Gujrat showroom gallery photograph ${idx + 1}`}
+                    referrerPolicy="no-referrer"
+                    loading="lazy"
+                    onError={() => {
+                      const origIdx = googlePhotos.indexOf(photo);
+                      if (origIdx !== -1) {
+                        setFailedIndices((prev) => ({...prev, [origIdx]: true}));
+                      }
+                    }}
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center border border-white/25 bg-[#1A1816]/65 text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100"
+                  >
+                    <ZoomIn className="h-3.5 w-3.5" />
+                  </span>
+                </button>
+                <div className="flex items-center justify-between gap-2 border-t border-[#1A1816]/10 bg-[#FAF8F4] px-3.5 py-2 text-[11px] text-[#6B5E53]">
+                  <span className="truncate font-medium text-[#1A1816]">
+                    Showroom Floor · Gujrat{photo.authorName ? ` (${photo.authorName})` : ''}
+                  </span>
+                  <a
+                    href={BUSINESS_INFO.googleMapsPhotosUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 font-medium text-[#3B281B] hover:underline"
+                  >
+                    Maps Listing
+                  </a>
                 </div>
-              ),
-            )
+              </div>
+            ))
           ) : (
             <>
-              <div className="overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] aspect-[4/3]">
-                <SafeImage
-                  src={SHOWROOM_MEDIA.dining.src}
-                  alt={SHOWROOM_MEDIA.dining.alt}
-                  title="Sheesham Dining Showcase"
-                  className="h-full w-full object-cover"
-                />
+              <div className="group overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-14px_rgba(59,40,27,0.2)]">
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(0)}
+                  aria-label="Zoom in on Solid Sheesham Dining & Sideboard Display"
+                  className="relative block aspect-[4/3] w-full overflow-hidden text-left focus:outline-none"
+                >
+                  <SafeImage
+                    src={SHOWROOM_MEDIA.dining.src}
+                    alt={SHOWROOM_MEDIA.dining.alt}
+                    title="Solid Sheesham Dining & Sideboard Display"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center border border-white/25 bg-[#1A1816]/65 text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100"
+                  >
+                    <ZoomIn className="h-3.5 w-3.5" />
+                  </span>
+                </button>
+                <p className="border-t border-[#1A1816]/10 bg-[#FAF8F4] px-3.5 py-2 text-xs font-medium text-[#1A1816]">
+                  Solid Sheesham Dining &amp; Sideboard Display
+                </p>
               </div>
-              <div className="overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] aspect-[4/3]">
-                <SafeImage
-                  src={SHOWROOM_MEDIA.wardrobe.src}
-                  alt={SHOWROOM_MEDIA.wardrobe.alt}
-                  title="Almari & Dressing Showcase"
-                  className="h-full w-full object-cover"
-                />
+              <div className="group overflow-hidden border border-[#1A1816]/10 bg-[#EFE9DE] transition-all duration-300 ease-out hover:-translate-y-0.5 hover:shadow-[0_14px_30px_-14px_rgba(59,40,27,0.2)]">
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(1)}
+                  aria-label="Zoom in on 3-Door Solid Wood Almari & Singhar Mez"
+                  className="relative block aspect-[4/3] w-full overflow-hidden text-left focus:outline-none"
+                >
+                  <SafeImage
+                    src={SHOWROOM_MEDIA.wardrobe.src}
+                    alt={SHOWROOM_MEDIA.wardrobe.alt}
+                    title="3-Door Solid Wood Almari & Singhar Mez"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute top-3 right-3 flex h-8 w-8 items-center justify-center border border-white/25 bg-[#1A1816]/65 text-white opacity-0 backdrop-blur-xs transition-opacity duration-200 group-hover:opacity-100"
+                  >
+                    <ZoomIn className="h-3.5 w-3.5" />
+                  </span>
+                </button>
+                <p className="border-t border-[#1A1816]/10 bg-[#FAF8F4] px-3.5 py-2 text-xs font-medium text-[#1A1816]">
+                  3-Door Solid Wood Almari &amp; Singhar Mez
+                </p>
               </div>
             </>
           )}
         </div>
       )}
+
+      <GalleryLightboxModal
+        slides={activeSlides}
+        activeIndex={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onNavigate={setLightboxIndex}
+      />
     </div>
   );
 }

@@ -3,6 +3,9 @@ export const BUSINESS_INFO = {
   shortName: 'REAL WOOD FURNITURES',
   type: 'Furniture Showroom & Furniture Accessories',
   address: 'G3GC+C7R, Gujrat, Punjab, Pakistan',
+  locationGuidance:
+    'Search Plus Code G3GC+C7R in Google Maps for turn-by-turn directions to our Gujrat showroom, or call +92 333 8407457 for landmark guidance before you arrive.',
+  deliveryCoverage: 'Safe, insured delivery across Gujrat and Punjab.',
   city: 'Gujrat',
   region: 'Punjab',
   country: 'Pakistan',
@@ -17,7 +20,7 @@ export const BUSINESS_INFO = {
   googleMapsEmbedFallbackUrl:
     'https://maps.google.com/maps?q=Real+Wood+Furnitures,+G3GC%2BC7R,+Gujrat,+Punjab,+Pakistan&t=&z=16&ie=UTF8&iwloc=&output=embed',
   defaultWhatsAppMessage:
-    'Hello Real Wood Furnitures, I am interested in your furniture collection. Please share more details.',
+    'Hello Real Wood Furnitures, I am interested in your furniture collection. Please share prices, photos, and showroom details.',
 } as const;
 
 export function buildWhatsAppUrl(customMessage?: string): string {
@@ -27,7 +30,7 @@ export function buildWhatsAppUrl(customMessage?: string): string {
 
 export function buildProductWhatsAppUrl(productName: string, category?: string): string {
   const categoryPart = category ? ` (${category})` : '';
-  const message = `Hello Real Wood Furnitures, I am interested in "${productName}"${categoryPart}. Please share availability, dimensions, and pricing details.`;
+  const message = `Assalam-o-Alaikum Real Wood Furnitures, please share the price, dimensions, and polish options for: ${productName}${categoryPart}.`;
   return buildWhatsAppUrl(message);
 }
 
@@ -36,9 +39,7 @@ export interface OpeningHourRow {
   hours: string;
 }
 
-export const OPENING_HOURS_STORAGE_KEY = 'rwf_opening_hours_v1';
-
-export const DEFAULT_OPENING_HOURS: OpeningHourRow[] = [
+export const SHOWROOM_OPENING_HOURS: OpeningHourRow[] = [
   {day: 'Monday', hours: '10:00 AM – 9:00 PM'},
   {day: 'Tuesday', hours: '10:00 AM – 9:00 PM'},
   {day: 'Wednesday', hours: '10:00 AM – 9:00 PM'},
@@ -57,26 +58,26 @@ export const SHOWROOM_FAQS: FaqItem[] = [
   {
     question: 'Where is Real Wood Furnitures showroom located in Gujrat?',
     answer:
-      'Real Wood Furnitures is located at G3GC+C7R, Gujrat, Punjab, Pakistan. You can view our exact pin on Google Maps or tap Get Directions on our website before visiting.',
+      'Real Wood Furnitures is located at G3GC+C7R, Gujrat, Punjab, Pakistan. Enter Plus Code G3GC+C7R into Google Maps or tap Get Directions on our site for turn-by-turn navigation.',
   },
   {
-    question: 'How can I contact Real Wood Furnitures or inquire about a piece on WhatsApp?',
+    question: 'What types of wood and furniture designs are available?',
     answer:
-      'You can call or message us directly on +92 333 8407457, or click any WhatsApp Inquiry button on our catalogue cards to send a message pre-filled with the piece you are interested in.',
+      'We specialize in seasoned solid Sheesham and walnut furniture, including Chinioti-inspired carved bridal and master bedroom suites, Dewan drawing room sofas, 8-seater dining tables, Almari wardrobes, and custom finishes.',
   },
   {
-    question: 'What types of furniture are available at the showroom?',
+    question: 'Can I customize sizes, upholstery fabrics, or wood polish finishes?',
     answer:
-      'Our showroom focuses on solid wooden furniture, including bedroom furniture, wooden beds, wardrobes, sofa sets, living room furniture, dining tables, chairs, and furniture accessories.',
+      'Yes. Custom room dimensions, velvet or linen upholstery fabrics, and walnut or natural wood polish finishes can be arranged. Message us on WhatsApp at +92 333 8407457 for custom quotes.',
   },
   {
-    question: 'Can I confirm pricing, wood finish options, and showroom availability before visiting?',
+    question: 'Do you offer delivery across Gujrat and Punjab?',
     answer:
-      'Yes. Because timber grades, upholstery fabrics, and dimensions can vary by order, pricing is shared directly on inquiry. Message us on WhatsApp at +92 333 8407457 for current showroom availability and pricing.',
+      'Yes, we arrange careful, safe furniture delivery across Gujrat and cities throughout Punjab. Contact our showroom team on WhatsApp to confirm delivery timelines for your order.',
   },
   {
-    question: 'Should I confirm opening hours before travelling to the Gujrat showroom?',
+    question: 'What are your showroom opening hours and how do I book a Sunday visit?',
     answer:
-      'We recommend calling or messaging +92 333 8407457 ahead of your visit—especially on Fridays, Sundays, or public holidays—to confirm showroom hours.',
+      'We are open Monday through Thursday and Saturday from 10:00 AM to 9:00 PM, and Friday from 2:30 PM to 9:00 PM. Sunday visits are available by appointment—please call +92 333 8407457 ahead.',
   },
 ];
