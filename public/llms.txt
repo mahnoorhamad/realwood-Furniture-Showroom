@@ -1,0 +1,23 @@
+# Real Wood Furnitures
+
+> Furniture showroom and wooden furniture retailer in Gujrat, Punjab, Pakistan.
+
+## Business Identity
+- Name: Real Wood Furnitures
+- Business Type: Furniture Showroom / Furniture Accessories
+- Address: G3GC+C7R, Gujrat, Punjab, Pakistan
+- Phone & WhatsApp: +92 333 8407457
+- WhatsApp Direct Link: https://wa.me/923338407457
+- Google Maps Listing: https://www.google.com/maps/place/Real+Wood+Furnitures/data=!4m2!3m1!1s0x0:0x66702d56387c5c38
+
+## Core Pages
+- /: Home — Showroom overview, featured furniture categories, gallery, FAQ, and Gujrat showroom map.
+- /collections: Furniture Collections — Browse bedroom furniture, wooden beds, wardrobes, sofa sets, living room furniture, dining tables, chairs, wooden furniture, and accessories with direct WhatsApp inquiries.
+- /about-contact: About & Contact — Showroom details, editable opening hours, directions, interactive Google Map, and customer inquiry form.
+
+## Primary Specialties
+- Solid wooden furniture in Gujrat
+- Wooden beds and bedroom furniture suites
+- Sofa sets and living room seating
+- Dining tables and wooden chairs
+- Custom showroom guidance and direct WhatsApp consultation
